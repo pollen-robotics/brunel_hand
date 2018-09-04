@@ -42,6 +42,14 @@ class BrunelHand(object):
         self.fingers[3].flex = 100
         time.sleep(1.0)
 
+    def get_finger_position(self):
+        self._serial.flushInput()
+        self._send('A6')
+        for _ in range(2):
+            _ = self._serial.readline()
+        l = self._serial.readline().decode()
+        return [int(x) for x in l.split(',')[:-1]]
+
     def move_finger(self, finger_name, flexness):
         flexness = np.clip(flexness, 0, 255)
         finger_name = finger_to_code[finger_name]
@@ -68,12 +76,21 @@ class Finger(object):
 
 
 if __name__ == '__main__':
-    import time
-
     hand = BrunelHand('/dev/tty.usbmodem14111')
+    hand.open()
+
+    for f in hand.fingers:
+        f.flex = 100
+        time.sleep(2)
+        print(hand.get_finger_position())
+        f.flex = 0
+        time.sleep(2)
+        print(hand.get_finger_position())
 
     for _ in range(3):
-        hand.index.flex = 0
+        hand.close()
         time.sleep(2)
-        hand.index.flex = 100
+        print(hand.get_finger_position())
+        hand.open()
         time.sleep(2)
+        print(hand.get_finger_position())
