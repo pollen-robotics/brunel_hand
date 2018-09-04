@@ -1,5 +1,7 @@
 import numpy as np
 import serial
+import time
+
 
 finger_to_code = {
     'thumb': 'F0',
@@ -24,6 +26,21 @@ class BrunelHand(object):
             f = Finger(name, self)
             setattr(self, name, f)
             self.fingers.append(f)
+
+    def open(self):
+        for f in self.fingers[1:]:
+            f.flex = 0
+        time.sleep(0.5)
+        self.fingers[0].flex = 0
+        time.sleep(1.0)
+
+    def close(self):
+        self.fingers[0].flex = 100
+        time.sleep(0.5)
+        self.fingers[1].flex = 80
+        self.fingers[2].flex = 80
+        self.fingers[3].flex = 100
+        time.sleep(1.0)
 
     def move_finger(self, finger_name, flexness):
         flexness = np.clip(flexness, 0, 255)
