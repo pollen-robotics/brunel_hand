@@ -2,15 +2,16 @@ import numpy as np
 import serial
 import time
 
+from collections import OrderedDict
 
-finger_to_code = {
-    'thumb': 'F0',
-    'index': 'F1',
-    'middle': 'F2',
+finger_to_code = OrderedDict((
+    ('thumb', 'F0'),
+    ('index', 'F1'),
+    ('middle', 'F2'),
     # Both ring and pinky are connected to the same motor
-    'ring': 'F3',
-    'pinky': 'F3',
-}
+    ('ring', 'F3'),
+    ('pinky', 'F3'),
+))
 
 
 class BrunelHand(object):
